@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in - Ecoleon Corporation</title>
+<style>
+  :root{--bg:#EEF3F5;--ink:#12263A;--mute:#5B6B7A;--line:#D6E0E5;--teal:#0E7C86;--side:#12263A;--red:#B3261E}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--side);font:16px system-ui,sans-serif;color:var(--ink)}
+  form{background:#fff;padding:32px;border-radius:10px;width:min(380px,92vw);display:grid;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{height:44px;width:auto;max-width:80px}
+  h1{margin:0;font-size:22px;line-height:1.2} p{margin:0;color:var(--mute)}
+  label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
+  input{padding:10px;border:1px solid var(--line);border-radius:6px;font:inherit;width:100%}
+  button{background:var(--teal);color:#fff;border:0;border-radius:6px;padding:11px;font:inherit;font-weight:600;cursor:pointer}
+  button:disabled{opacity:.6}
+  :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  #err{color:var(--red);font-size:14px;min-height:20px}
+</style>
+</head>
+<body>
+<form id="f">
+  <div class="brand"><img src="/logo.png" alt="" onerror="this.remove()"><h1>Ecoleon Corporation</h1></div>
+  <p>Sign in to the document system.</p>
+  <label>Email<input id="email" type="email" autocomplete="username" required autofocus></label>
+  <label>Password<input id="password" type="password" autocomplete="current-password" required></label>
+  <div id="err" role="alert"></div>
+  <button type="submit" id="go">Sign in</button>
+</form>
+<script>
+document.getElementById('f').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const go = document.getElementById('go'), err = document.getElementById('err');
+  go.disabled = true; err.textContent = '';
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      })
+    });
+    if (res.ok) { location.href = '/'; return; }
+    err.textContent = (await res.json().catch(() => ({}))).error || 'Something went wrong.';
+  } catch (_) { err.textContent = 'Cannot reach the server.'; }
+  go.disabled = false;
+});
+</script>
+</body>
+</html>

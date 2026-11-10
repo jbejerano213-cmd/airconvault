@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ecoleon Corporation</title>
+<style>
+:root{--bg:#F1F5F7;--panel:#fff;--ink:#12263A;--mute:#5B6B7A;--line:#DCE5EA;--teal:#0E7C86;--teal-d:#0A636B;--tealbg:#DDF0F1;--cu:#B5651D;--cubg:#F8E8D6;--red:#B3261E;--side:#12263A;--radius:10px;--shadow:0 1px 2px rgba(18,38,58,.06),0 4px 14px rgba(18,38,58,.06)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+/* sidebar */
+aside{background:var(--side);color:#C9D7E0;padding:20px 12px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:18px;padding:0 10px 18px;line-height:1.2}
+.brand img{height:36px;width:auto;max-width:64px;border-radius:6px;background:#fff;padding:3px}
+.brand small{display:block;font-size:12px;font-weight:400;opacity:.7}
+nav{display:flex;flex-direction:column;gap:2px}
+nav .gap{height:14px}
+nav button{display:flex;align-items:center;gap:10px;background:none;border:0;color:#C9D7E0;text-align:left;padding:9px 12px;border-radius:8px;width:100%}
+nav button:hover{background:rgba(255,255,255,.07)}
+nav button.on{background:rgba(255,255,255,.14);color:#fff;font-weight:600}
+svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.me{margin-top:auto;padding:12px 10px 0;border-top:1px solid rgba(255,255,255,.1);font-size:13px}
+.me b{color:#fff;display:block}
+.me button{background:none;border:0;color:#E9A15F;padding:4px 0;display:block}
+.mbar{display:none}
+#scrim{display:none}
+
+/* main */
+main{padding:28px 32px;min-width:0;max-width:1240px}
+.top{display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.top h2{margin:0;font-size:24px;letter-spacing:-.01em;flex:1;min-width:160px}
+input,select{padding:9px 10px;border:1px solid var(--line);border-radius:8px;width:100%;background:#fff}
+.top input{max-width:280px}.top select{max-width:170px}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn:hover{background:var(--teal-d)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:#F4F8FA}
+.btn.ghost.del{color:var(--red)}
+.btn.danger{background:var(--red)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+.card.flush{padding:0;overflow:hidden}
+.wrap{overflow-x:auto}
+.split{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.meter{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:10px 0}
+.meter i{display:block;height:100%;background:var(--teal);border-radius:6px;transition:width .3s}
+.meter.warn i{background:var(--cu)}.meter.bad i{background:var(--red)}
+.sub{color:var(--mute);font-size:13px}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute);font-weight:600;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);background:#F8FBFC}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#F7FAFB}
+.fname{display:flex;gap:12px;align-items:center;min-width:0}
+.fname b{overflow-wrap:anywhere}
+.ftype{flex:none;width:38px;height:38px;border-radius:8px;display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;background:#6B7C8A}
+.ftype.pdf{background:#C0392B}.ftype.doc{background:#2B6CB0}.ftype.xls{background:#2E7D32}.ftype.img{background:#7B4DB5}.ftype.zip{background:#B5651D}
+.tag{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;background:var(--cubg);color:var(--cu);font-weight:600;white-space:nowrap}
+.tag.t{background:var(--tealbg);color:var(--teal)}
+.acts{display:flex;gap:6px;white-space:nowrap;justify-content:flex-end}
+.foot{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.avatar{flex:none;width:36px;height:36px;border-radius:50%;background:var(--tealbg);color:var(--teal);display:grid;place-items:center;font-weight:700;font-size:13px}
+.empty{padding:52px 20px;text-align:center;color:var(--mute)}
+.empty svg{width:40px;height:40px;stroke-width:1.4;margin-bottom:8px;opacity:.7}
+.skel{height:16px;border-radius:6px;margin:18px 16px;background:linear-gradient(90deg,#E8EEF1,#F4F7F8,#E8EEF1);background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+
+/* modal and toasts */
+.modal{position:fixed;inset:0;background:rgba(10,18,27,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:40}
+.modal.on{display:flex}
+.modal form{background:#fff;border-radius:12px;padding:22px;width:100%;max-width:460px;display:grid;gap:12px;max-height:92vh;overflow:auto;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.modal h3{margin:0;font-size:18px}
+.modal label{display:grid;gap:4px;font-size:13px;color:var(--mute)}
+.btns{display:flex;gap:8px;justify-content:flex-end}
+.err{color:var(--red);font-size:14px;min-height:18px}
+.perms{display:flex;gap:16px;flex-wrap:wrap}
+.perms label{display:flex;gap:6px;align-items:center;color:var(--ink);font-size:14px}.perms input{width:auto}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:24px 16px;text-align:center;display:grid;gap:2px;cursor:pointer;background:#F8FBFC}
+.drop.over{border-color:var(--teal);background:var(--tealbg)}
+.picked{list-style:none;margin:0;padding:0;display:grid;gap:6px;max-height:160px;overflow:auto}
+.picked li{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:13px;background:#F4F8FA;border-radius:6px;padding:6px 10px}
+.picked .x{background:none;border:0;color:var(--mute);font-size:18px;line-height:1;padding:0 4px}
+#toasts{position:fixed;right:18px;bottom:18px;display:grid;gap:8px;z-index:60}
+.toast{background:var(--ink);color:#fff;padding:11px 16px;border-radius:8px;box-shadow:var(--shadow);max-width:340px;animation:in .2s}
+.toast.err{background:var(--red)}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+@media(max-width:860px){
+  body{grid-template-columns:1fr}
+  .mbar{display:flex;position:sticky;top:0;z-index:20;background:var(--side);color:#fff;align-items:center;gap:12px;padding:10px 14px;font-weight:700}
+  .mbar button{background:none;border:0;color:#fff;padding:2px}.mbar svg{width:24px;height:24px}
+  aside{position:fixed;inset:0 auto 0 0;width:270px;z-index:30;transform:translateX(-100%);transition:transform .2s}
+  body.menu aside{transform:none}
+  body.menu #scrim{display:block;position:fixed;inset:0;background:rgba(10,18,27,.5);z-index:25}
+  main{padding:18px 14px}
+  .top input,.top select{max-width:none;flex:1 1 140px}
+  #toasts{left:12px;right:12px}.toast{max-width:none}
+}
+</style>
+</head>
+<body>
+<header class="mbar">
+  <button onclick="toggleMenu(true)" aria-label="Open menu"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <span>Ecoleon</span>
+</header>
+<div id="scrim" onclick="toggleMenu(false)"></div>
+<aside>
+  <div class="brand"><img src="/logo.png" alt="" onerror="this.remove()"><span>Ecoleon<small>Document management</small></span></div>
+  <nav id="nav" aria-label="Sections"></nav>
+  <div class="me"><b id="meName"></b><span id="meRole"></span>
+    <button onclick="pwForm()">Change password</button><button onclick="logout()">Sign out</button></div>
+</aside>
+<main>
+  <div id="filesView">
+    <div class="top">
+      <h2 id="title">All files</h2>
+      <input id="q" placeholder="Search by filename" aria-label="Search by filename">
+      <select id="sort" aria-label="Sort files">
+        <option value="newest">Newest first</option><option value="oldest">Oldest first</option>
+        <option value="name">Name A to Z</option><option value="largest">Largest first</option>
+      </select>
+      <button class="btn" id="upBtn" onclick="openUpload()" hidden>Upload files</button>
+    </div>
+    <div class="card" id="storage"></div>
+    <div class="card flush" id="list"></div>
+  </div>
+  <div id="staffView" hidden>
+    <div class="top"><h2>Employees</h2><button class="btn" onclick="staffForm()">Add employee</button></div>
+    <div class="card flush" id="staffList"></div>
+  </div>
+  <div id="exportView" hidden>
+    <div class="top"><h2>Export and clear storage</h2></div>
+    <div class="card">
+      <p style="margin-top:0">1. Choose what to export. 2. Download the ZIP. 3. After checking that it opens, clear those files to free up space.</p>
+      <div style="display:grid;gap:10px;max-width:420px">
+        <label class="sub" style="display:grid;gap:4px">Month<select id="exMonth"></select></label>
+        <label class="sub" style="display:grid;gap:4px">Type<select id="exCat"></select></label>
+      </div>
+      <p id="exInfo" style="margin:14px 0 4px"></p>
+      <p id="exNote" class="sub" style="margin:0 0 14px"></p>
+      <div class="acts" style="justify-content:flex-start">
+        <a class="btn" id="exDl" href="#" onclick="watchExport()" hidden>Download ZIP</a>
+        <button class="btn ghost del" id="exClear" onclick="clearExport()" hidden>Clear these files from storage</button>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="modal" id="modal" role="dialog" aria-modal="true"><form id="mform"></form></div>
+<div id="toasts" aria-live="polite"></div>
+
+<script>
+const ICON = {
+  all: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  air: '<rect x="3" y="5" width="18" height="8" rx="2"/><path d="M7 17c0 1.5-1 2-1 3M12 17c0 1.5-1 2-1 3M17 17c0 1.5-1 2-1 3"/>',
+  wash: '<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="14" r="4"/><path d="M8 7h.01M11 7h.01"/>',
+  fridge: '<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M6 10h12M9 6v1M9 13v3"/>',
+  users: '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5M16 5a3 3 0 0 1 0 6M18 15c2 .5 3 2 3 5"/>',
+  export: '<path d="M12 3v12M7 10l5 5 5-5M4 20h16"/>',
+  empty: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5"/>'
+};
+const svg = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
+const SECTIONS = [
+  { key: '', label: 'All files', icon: 'all' },
+  { key: 'Aircon', label: 'Aircon', icon: 'air' },
+  { key: 'Washing Machine', label: 'Washing machine', icon: 'wash' },
+  { key: 'Refrigerator', label: 'Refrigerator', icon: 'fridge' }
+];
+const ADMIN_SECTIONS = [
+  { key: '__staff', label: 'Employees', icon: 'users' },
+  { key: '__export', label: 'Export and clear', icon: 'export' }
+];
+const TYPES = SECTIONS.slice(1);
+const PAGE = 50, MAX_FILE = 200 * 1024 * 1024;
+let me = null, section = '', files = [], total = 0, staffCache = [], picked = [];
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const size = b => b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : b < 1073741824 ? (b / 1048576).toFixed(1) + ' MB' : b < 1099511627776 ? (b / 1073741824).toFixed(2) + ' GB' : (b / 1099511627776).toFixed(2) + ' TB';
+const fmtDate = s => new Date(s.replace(' ', 'T') + 'Z').toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' });
+const extOf = n => ((n.match(/\.([a-z0-9]{1,5})$/i) || [])[1] || '').toLowerCase();
+const ftClass = e => /^pdf$/.test(e) ? 'pdf' : /^(docx?|rtf|txt|odt)$/.test(e) ? 'doc' : /^(xlsx?|csv|ods)$/.test(e) ? 'xls' : /^(png|jpe?g|gif|webp|heic|bmp|svg)$/.test(e) ? 'img' : /^(zip|rar|7z|gz|tar)$/.test(e) ? 'zip' : '';
+const viewable = n => /\.(pdf|png|jpe?g|gif|webp)$/i.test(n);
+const initials = n => n.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+const isAdmin = () => me.role === 'admin';
+
+async function api(url, method = 'GET', body) {
+  const res = await fetch(url, {
+    method,
+    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (res.status === 401) { location.href = '/login.html'; throw new Error('Signed out'); }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+  return data;
+}
+async function logout() { await api('/api/logout', 'POST').catch(() => {}); location.href = '/login.html'; }
+
+function toast(msg, kind) {
+  const t = document.createElement('div');
+  t.className = 'toast' + (kind === 'err' ? ' err' : '');
+  t.textContent = msg;
+  $('#toasts').append(t);
+  setTimeout(() => t.remove(), kind === 'err' ? 6000 : 3000);
+}
+
+/* ---------- modal helpers ---------- */
+let modalCancel = null;
+function closeM(done) {
+  $('#modal').classList.remove('on');
+  const c = modalCancel; modalCancel = null;
+  if (!done && c) c();
+}
+function openModal(html, onSubmit, onCancel) {
+  const f = $('#mform');
+  f.innerHTML = html;
+  f.onsubmit = onSubmit;
+  modalCancel = onCancel || null;
+  $('#modal').classList.add('on');
+  (f.querySelector('input:not([hidden]),select') || f.querySelector('.btns .btn:last-child'))?.focus();
+}
+$('#modal').onclick = e => { if (e.target.id === 'modal') closeM(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeM(); toggleMenu(false); } });
+function toggleMenu(open) { document.body.classList.toggle('menu', open); }
+
+function ask({ title, message, label = 'Confirm', danger = false, word }) {
+  return new Promise(resolve => {
+    openModal(`<h3>${esc(title)}</h3>
+      <p class="sub" style="margin:0;white-space:pre-line">${esc(message)}</p>
+      ${word ? `<label>Type <b>${esc(word)}</b> to continue<input name="w" autocomplete="off"></label>` : ''}
+      <div class="err" id="merr"></div>
+      <div class="btns"><button type="button" class="btn ghost" onclick="closeM()">Cancel</button>
+        <button class="btn ${danger ? 'danger' : ''}">${esc(label)}</button></div>`,
+      e => {
+        e.preventDefault();
+        if (word && new FormData($('#mform')).get('w') !== word) { $('#merr').textContent = 'Type ' + word + ' exactly.'; return; }
+        closeM(true); resolve(true);
+      },
+      () => resolve(false));
+  });
+}
+
+/* ---------- navigation ---------- */
+function drawNav() {
+  const all = [...SECTIONS, ...(isAdmin() ? ADMIN_SECTIONS : [])];
+  $('#nav').innerHTML = all.map((s, i) => (i === SECTIONS.length ? '<div class="gap"></div>' : '') +
+    `<button class="${s.key === section ? 'on' : ''}" data-k="${esc(s.key)}">${svg(s.icon)}${s.label}</button>`).join('');
+}
+$('#nav').onclick = e => { const b = e.target.closest('button'); if (b) go(b.dataset.k); };
+function go(key) {
+  section = key;
+  const def = [...SECTIONS, ...ADMIN_SECTIONS].find(s => s.key === key);
+  const staff = key === '__staff', exp = key === '__export';
+  $('#filesView').hidden = staff || exp;
+  $('#staffView').hidden = !staff;
+  $('#exportView').hidden = !exp;
+  document.title = def.label + ' - Ecoleon';
+  drawNav(); toggleMenu(false);
+  if (staff) return loadStaff();
+  if (exp) return loadExport();
+  $('#title').textContent = def.label;
+  $('#q').value = '';
+  loadFiles(); loadStorage();
+}
+
+/* ---------- files ---------- */
+async function loadStorage() {
+  const s = await api('/api/storage'), p = s.used / s.quota * 100;
+  $('#storage').innerHTML = `<div class="split"><div><b>${size(s.used)}</b> <span class="sub">of ${size(s.quota)} used</span></div>
+      <b>${p > 0 && p < 0.1 ? '<0.1' : p.toFixed(1)}%</b></div>
+    <div class="meter ${p > 95 ? 'bad' : p > 80 ? 'warn' : ''}"><i style="width:${Math.min(Math.max(p, 0.5), 100)}%"></i></div>
+    <span class="sub">${size(Math.max(s.quota - s.used, 0))} available · ${s.files.toLocaleString()} file${s.files === 1 ? '' : 's'} in total</span>`;
+}
+async function loadFiles(append) {
+  if (!append) $('#list').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+  const qs = new URLSearchParams({ q: $('#q').value, category: section, sort: $('#sort').value, limit: PAGE, offset: append ? files.length : 0 });
+  try {
+    const r = await api('/api/files?' + qs);
+    files = append ? files.concat(r.files) : r.files;
+    total = r.total;
+    drawFiles();
+  } catch (e) { toast(e.message, 'err'); }
+}
+function drawFiles() {
+  const canDl = isAdmin() || me.canDownload, canDel = isAdmin() || me.canDelete;
+  if (!files.length) {
+    $('#list').innerHTML = `<div class="empty">${svg('empty')}<div>${$('#q').value
+      ? 'No files match your search.' : 'No files here yet.'}</div>${!$('#q').value && !$('#upBtn').hidden
+      ? '<div class="sub">Click "Upload files" to add the first one.</div>' : ''}</div>`;
+    return;
+  }
+  $('#list').innerHTML = `<div class="wrap"><table><thead><tr><th>File</th><th>Type</th><th>Size</th><th>Uploaded</th><th></th></tr></thead><tbody>` +
+    files.map(f => { const e = extOf(f.original_name); return `<tr>
+      <td><div class="fname"><span class="ftype ${ftClass(e)}">${esc((e || 'file').slice(0, 4).toUpperCase())}</span><b>${esc(f.original_name)}</b></div></td>
+      <td><span class="tag">${esc(f.category)}</span></td><td>${size(f.size_bytes)}</td>
+      <td>${esc(fmtDate(f.uploaded_at))}<div class="sub">${esc(f.uploaded_by || 'Removed user')}</div></td>
+      <td><div class="acts">
+        ${canDl ? `${viewable(f.original_name) ? `<a class="btn ghost sm" href="/api/files/${f.id}/view" target="_blank" rel="noopener">View</a>` : ''}<a class="btn sm" href="/api/files/${f.id}/download">Download</a>` : ''}
+        ${canDel ? `<button class="btn ghost sm del" data-del="${f.id}">Delete</button>` : ''}
+      </div></td></tr>`; }).join('') +
+    `</tbody></table></div><div class="foot"><span class="sub">Showing ${files.length.toLocaleString()} of ${total.toLocaleString()}</span>
+      ${files.length < total ? '<button class="btn ghost sm" id="more">Load more</button>' : ''}</div>`;
+}
+$('#list').onclick = e => {
+  if (e.target.id === 'more') loadFiles(true);
+  const d = e.target.closest('[data-del]'); if (d) deleteFile(+d.dataset.del);
+};
+async function deleteFile(id) {
+  const f = files.find(x => x.id === id);
+  if (!await ask({ title: 'Delete this file?', message: f.original_name + '\nThis cannot be undone.', label: 'Delete', danger: true })) return;
+  try { await api('/api/files/' + id, 'DELETE'); toast('File deleted'); await refresh(); } catch (e) { toast(e.message, 'err'); }
+}
+const refresh = () => Promise.all([loadFiles(), loadStorage()]);
+let searchTimer;
+$('#q').oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadFiles(), 250); };
+$('#sort').onchange = () => loadFiles();
+
+/* ---------- upload ---------- */
+function openUpload() {
+  picked = [];
+  openModal(`<h3>Upload files</h3>
+    <label>Type<select id="upCat">${TYPES.map(s => `<option value="${s.key}" ${s.key === section ? 'selected' : ''}>${s.label}</option>`).join('')}</select></label>
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose files">
+      <b>Drop files here</b><span class="sub">or click to browse · up to 20 files, 200 MB each</span>
+      <input type="file" id="upFile" multiple hidden></div>
+    <ul class="picked" id="picked"></ul>
+    <div class="meter" id="upMeter" hidden><i style="width:0"></i></div>
+    <div class="err" id="merr"></div>
+    <div class="btns"><button type="button" class="btn ghost" onclick="closeM()">Cancel</button><button class="btn" id="go" disabled>Upload</button></div>`,
+    e => { e.preventDefault(); doUpload(); });
+  const drop = $('#drop'), input = $('#upFile');
+  drop.onclick = () => input.click();
+  drop.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } };
+  input.onchange = () => { addPicked(input.files); input.value = ''; };
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => addPicked(e.dataTransfer.files));
+  $('#picked').onclick = e => { const b = e.target.closest('button'); if (b) { picked.splice(+b.dataset.i, 1); drawPicked(); } };
+}
+function addPicked(list) {
+  let msg = '';
+  for (const f of list) {
+    if (f.size > MAX_FILE) { msg = f.name + ' is larger than 200 MB.'; continue; }
+    if (picked.length >= 20) { msg = 'You can upload 20 files at a time.'; break; }
+    picked.push(f);
+  }
+  $('#merr').textContent = msg;
+  drawPicked();
+}
+function drawPicked() {
+  $('#picked').innerHTML = picked.map((f, i) => `<li><span>${esc(f.name)} <span class="sub">${size(f.size)}</span></span>
+    <button type="button" class="x" data-i="${i}" aria-label="Remove ${esc(f.name)}">&times;</button></li>`).join('');
+  $('#go').disabled = !picked.length;
+  $('#go').textContent = picked.length ? `Upload ${picked.length} file${picked.length === 1 ? '' : 's'}` : 'Upload';
+}
+function doUpload() {
+  const fd = new FormData();
+  fd.append('category', $('#upCat').value);
+  picked.forEach(f => fd.append('files', f));
+  const xhr = new XMLHttpRequest(), go = $('#go');
+  go.disabled = true; $('#upMeter').hidden = false;
+  xhr.upload.onprogress = ev => {
+    if (!ev.lengthComputable) return;
+    const p = Math.round(ev.loaded / ev.total * 100);
+    $('#upMeter i').style.width = p + '%'; go.textContent = 'Uploading ' + p + '%';
+  };
+  const fail = m => { $('#merr').textContent = m; $('#upMeter').hidden = true; drawPicked(); };
+  xhr.onload = async () => {
+    if (xhr.status === 401) { location.href = '/login.html'; return; }
+    if (xhr.status === 200) {
+      const n = picked.length; closeM(true);
+      toast(n + ' file' + (n === 1 ? '' : 's') + ' uploaded'); await refresh(); return;
+    }
+    let m = 'Upload failed. Please try again.';
+    try { m = JSON.parse(xhr.responseText).error || m; } catch (_) {}
+    fail(m);
+  };
+  xhr.onerror = () => fail('Connection lost. Please try again.');
+  xhr.open('POST', '/api/files'); xhr.send(fd);
+}
+
+/* ---------- employees ---------- */
+async function loadStaff() {
+  $('#staffList').innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  try { staffCache = await api('/api/users'); } catch (e) { toast(e.message, 'err'); return; }
+  const perms = [['can_upload', 'Upload'], ['can_download', 'Download'], ['can_delete', 'Delete']];
+  $('#staffList').innerHTML = `<div class="wrap"><table><thead><tr><th>Name</th><th>Role</th><th>Permissions</th><th></th></tr></thead><tbody>` +
+    staffCache.map(u => `<tr><td><div class="fname"><span class="avatar">${esc(initials(u.name))}</span><div><b>${esc(u.name)}</b><div class="sub">${esc(u.email)}</div></div></div></td>
+      <td>${u.role === 'admin' ? 'Administrator' : 'Staff'}</td>
+      <td>${u.role === 'admin' ? '<span class="tag t">Everything</span>'
+        : (perms.filter(([k]) => u[k]).map(([, l]) => `<span class="tag t">${l}</span>`).join(' ') || '<span class="sub">View list only</span>')}</td>
+      <td><div class="acts"><button class="btn ghost sm" data-edit="${u.id}">Edit</button>
+        ${u.id !== me.id ? `<button class="btn ghost sm del" data-rm="${u.id}">Delete</button>` : ''}</div></td></tr>`).join('') + `</tbody></table></div>`;
+}
+$('#staffList').onclick = e => {
+  const ed = e.target.closest('[data-edit]'), rm = e.target.closest('[data-rm]');
+  if (ed) staffForm(+ed.dataset.edit);
+  if (rm) delStaff(+rm.dataset.rm);
+};
+function staffForm(id) {
+  const u = id ? staffCache.find(x => x.id === id) : null, isNew = !u;
+  const checked = k => (u ? u[k] : k !== 'can_delete') ? 'checked' : '';
+  openModal(`<h3>${isNew ? 'Add employee' : 'Edit employee'}</h3>
+    <label>Full name<input name="name" value="${esc(u?.name)}" required></label>
+    <label>Email<input name="email" type="email" value="${esc(u?.email)}" required></label>
+    <label>${isNew ? 'Password (at least 8 characters)' : 'New password (leave blank to keep the current one)'}
+      <input name="password" type="password" autocomplete="new-password" ${isNew ? 'required minlength="8"' : ''}></label>
+    <label>Role<select name="role" id="roleSel">
+      <option value="staff" ${u?.role !== 'admin' ? 'selected' : ''}>Staff</option>
+      <option value="admin" ${u?.role === 'admin' ? 'selected' : ''}>Administrator (can do everything)</option></select></label>
+    <div class="perms" id="perms">
+      <label><input type="checkbox" name="can_upload" ${checked('can_upload')}>Upload</label>
+      <label><input type="checkbox" name="can_download" ${checked('can_download')}>Download</label>
+      <label><input type="checkbox" name="can_delete" ${checked('can_delete')}>Delete</label></div>
+    <div class="err" id="merr"></div>
+    <div class="btns"><button type="button" class="btn ghost" onclick="closeM()">Cancel</button><button class="btn">${isNew ? 'Add employee' : 'Save changes'}</button></div>`,
+    async e => {
+      e.preventDefault();
+      const d = Object.fromEntries(new FormData($('#mform')));
+      const body = { name: d.name, email: d.email, password: d.password, role: d.role,
+        can_upload: !!d.can_upload, can_download: !!d.can_download, can_delete: !!d.can_delete };
+      try {
+        await api(isNew ? '/api/users' : '/api/users/' + u.id, isNew ? 'POST' : 'PUT', body);
+        closeM(true); toast(isNew ? 'Employee added' : 'Changes saved'); loadStaff();
+      } catch (err) { $('#merr').textContent = err.message; }
+    });
+  const sync = () => $('#perms').querySelectorAll('input').forEach(i => i.disabled = $('#roleSel').value === 'admin');
+  $('#roleSel').onchange = sync; sync();
+}
+async function delStaff(id) {
+  const u = staffCache.find(x => x.id === id);
+  if (!await ask({ title: 'Delete ' + u.name + '?', message: 'They will no longer be able to sign in. Files they uploaded stay in the system.', label: 'Delete', danger: true })) return;
+  try { await api('/api/users/' + id, 'DELETE'); toast('Employee deleted'); loadStaff(); } catch (e) { toast(e.message, 'err'); }
+}
+
+/* ---------- change password ---------- */
+function pwForm() {
+  toggleMenu(false);
+  openModal(`<h3>Change password</h3>
+    <label>Current password<input name="current" type="password" autocomplete="current-password" required></label>
+    <label>New password (at least 8 characters)<input name="newPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+    <label>Confirm new password<input name="confirm" type="password" autocomplete="new-password" required></label>
+    <div class="err" id="merr"></div>
+    <div class="btns"><button type="button" class="btn ghost" onclick="closeM()">Cancel</button><button class="btn">Change password</button></div>`,
+    async e => {
+      e.preventDefault();
+      const d = Object.fromEntries(new FormData($('#mform')));
+      if (d.newPassword !== d.confirm) { $('#merr').textContent = 'The new passwords do not match.'; return; }
+      try { await api('/api/me/password', 'POST', { current: d.current, newPassword: d.newPassword }); closeM(true); toast('Password changed'); }
+      catch (err) { $('#merr').textContent = err.message; }
+    });
+}
+
+/* ---------- export and clear (administrators only) ---------- */
+const monthName = m => new Date(m + '-01T00:00:00').toLocaleString('en', { month: 'long', year: 'numeric' });
+async function loadExport() {
+  const months = (await api('/api/export/months')).map(x => x.month);
+  const now = new Date(), cur = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  if (!months.includes(cur)) months.unshift(cur);
+  $('#exMonth').innerHTML = '<option value="">All time</option>' +
+    months.map(m => `<option value="${m}" ${m === cur ? 'selected' : ''}>${monthName(m)}</option>`).join('');
+  $('#exCat').innerHTML = '<option value="">All types</option>' + TYPES.map(t => `<option value="${t.key}">${t.label}</option>`).join('');
+  $('#exMonth').onchange = exSummary;
+  $('#exCat').onchange = exSummary;
+  exSummary();
+}
+async function exSummary() {
+  const qs = `month=${encodeURIComponent($('#exMonth').value)}&category=${encodeURIComponent($('#exCat').value)}`;
+  const s = await api('/api/export/summary?' + qs);
+  $('#exInfo').innerHTML = s.count ? `<b>${s.count.toLocaleString()} file${s.count === 1 ? '' : 's'}</b> · ${size(s.bytes)}` : 'No files for this selection.';
+  $('#exDl').hidden = !s.count;
+  $('#exDl').href = '/api/export/download?' + qs;
+  $('#exClear').hidden = !s.count;
+  $('#exClear').disabled = !s.exported;
+  $('#exNote').textContent = !s.count ? '' : s.exported
+    ? 'Exported. Open the ZIP and check your files. When you are sure, you can clear them.'
+    : 'Download the ZIP first. Clearing unlocks after the download finishes.';
+}
+let exTimer;
+function watchExport() {   // re-checks every 5 seconds until the export has finished
+  clearInterval(exTimer);
+  let n = 0;
+  exTimer = setInterval(async () => {
+    if ($('#exportView').hidden || ++n > 720) { clearInterval(exTimer); return; }
+    await exSummary();
+    if (!$('#exClear').disabled) clearInterval(exTimer);
+  }, 5000);
+}
+async function clearExport() {
+  const month = $('#exMonth').value, category = $('#exCat').value;
+  if (!await ask({ title: 'Clear these files from storage?',
+    message: 'This permanently deletes them from the system.\nMake sure the ZIP downloaded and opens correctly.',
+    label: 'Clear files', danger: true, word: 'CLEAR' })) return;
+  try {
+    const r = await api('/api/export/clear', 'POST', { month, category, confirm: 'CLEAR' });
+    toast(r.cleared + ' file(s) cleared. ' + size(r.bytes) + ' freed.');
+    exSummary();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+/* ---------- start ---------- */
+(async () => {
+  try { me = await api('/api/me'); } catch (_) { return; }
+  $('#meName').textContent = me.name;
+  $('#meRole').textContent = isAdmin() ? 'Administrator' : 'Staff';
+  $('#upBtn').hidden = !(isAdmin() || me.canUpload);
+  go('');
+})();
+</script>
+</body>
+</html>
